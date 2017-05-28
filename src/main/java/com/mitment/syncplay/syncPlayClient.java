@@ -12,6 +12,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -43,12 +44,14 @@ public class syncPlayClient implements Runnable {
 
     private syncPlayClientInterface sPlayInterface;
     private boolean isConnected;
+    private boolean isReady;
     private PrintWriter pw;
     private syncPlayClientInterface.playerDetails mPlayerDetails;
 
     private long latency = 0L;
     private long pongTimeKeeper = System.currentTimeMillis();
 
+    private ArrayList<String> frameArray;
     public syncPlayClient(String username, String room, String address, String password,
                           syncPlayClientInterface mSyncPlayClientInterface) {
         this.sPlayInterface = mSyncPlayClientInterface;
@@ -65,6 +68,7 @@ public class syncPlayClient implements Runnable {
         } else {
             this.password = "";
         }
+        frameArray = new ArrayList<>();
     }
 
     private JSONObject helloRequest() {
@@ -127,6 +131,11 @@ public class syncPlayClient implements Runnable {
                     sPlayInterface.onError(e.toString());
                 }
                 while (response != null && isConnected) {
+                    for (String frame : frameArray) {
+                        sendFrame(frame);
+                    }
+                    frameArray.clear();
+
                     this.latency = System.currentTimeMillis() - this.pongTimeKeeper;
                     sPlayInterface.debugMessage("SERVER << " + response);
                     try {
@@ -169,28 +178,28 @@ public class syncPlayClient implements Runnable {
                                         try {
                                             mFileDetails = new
                                                     syncPlayClientInterface.userFileDetails(
-                                                    (long) new Double((double) file.get("duration")).longValue(),
-                                                    (long) new Double((double) file.get("size")).longValue(),
+                                                    new Double((double) file.get("duration")).longValue(),
+                                                    new Double((double) file.get("size")).longValue(),
                                                     (String) file.get("name"), userName);
                                         } catch (ClassCastException e) {
                                             try {
                                                 mFileDetails = new
                                                         syncPlayClientInterface.userFileDetails(
-                                                        (long) new Double((long) file.get("duration")).longValue(),
-                                                        (long) new Double((long) file.get("size")).longValue(),
+                                                        new Double((long) file.get("duration")).longValue(),
+                                                        new Double((long) file.get("size")).longValue(),
                                                         (String) file.get("name"), userName);
                                             } catch (ClassCastException f) {
                                                 try {
                                                     mFileDetails = new
                                                             syncPlayClientInterface.userFileDetails(
-                                                            (long) new Double((long) file.get("duration")).longValue(),
-                                                            (long) new Double((double) file.get("size")).longValue(),
+                                                            new Double((long) file.get("duration")).longValue(),
+                                                            new Double((double) file.get("size")).longValue(),
                                                             (String) file.get("name"), userName);
                                                 } catch (ClassCastException g) {
                                                     mFileDetails = new
                                                             syncPlayClientInterface.userFileDetails(
-                                                            (long) new Double((double) file.get("duration")).longValue(),
-                                                            (long) new Double((long) file.get("size")).longValue(),
+                                                            new Double((double) file.get("duration")).longValue(),
+                                                            new Double((long) file.get("size")).longValue(),
                                                             (String) file.get("name"), userName);
                                                 }
                                             }
@@ -218,7 +227,7 @@ public class syncPlayClient implements Runnable {
                                                 && file.containsKey("name")) {
                                             try {
                                                 details.push(new syncPlayClientInterface.userFileDetails(
-                                                        (long) new Double((double) file.get("duration")).longValue(), (long) file.get("size"),
+                                                        new Double((double) file.get("duration")).longValue(), (long) file.get("size"),
                                                         (String) file.get("name"), user
                                                 ));
                                             } catch (ClassCastException e) {
@@ -230,14 +239,14 @@ public class syncPlayClient implements Runnable {
                                                 } catch (ClassCastException f) {
                                                     try {
                                                         details.push(new syncPlayClientInterface.userFileDetails(
-                                                                (long) new Double((double) file.get("duration")).longValue(),
-                                                                (long) new Double((double) file.get("size")).longValue(),
+                                                                new Double((double) file.get("duration")).longValue(),
+                                                                new Double((double) file.get("size")).longValue(),
                                                                 (String) file.get("name"), user
                                                         ));
                                                     } catch (ClassCastException g) {
                                                         details.push(new syncPlayClientInterface.userFileDetails(
                                                                 (long) file.get("duration"),
-                                                                (long) new Double((double) file.get("size")).longValue(),
+                                                                new Double((double) file.get("size")).longValue(),
                                                                 (String) file.get("name"), user
                                                         ));
                                                     }
@@ -390,6 +399,23 @@ public class syncPlayClient implements Runnable {
         this.duration = duration;
         this.size = size;
         this.triggerFile = true;
+    }
+
+    public void setReady (boolean isReady) {
+        this.isReady = isReady;
+        frameArray.add(prepareReady(true).toString());
+    }
+
+    private JSONObject prepareReady(boolean manuallyInitiated) {
+        JSONObject payload = new JSONObject();
+        JSONObject set = new JSONObject();
+        JSONObject ready = new JSONObject();
+        ready.put("isReady", this.isReady);
+        ready.put("username", this.username);
+        ready.put("manuallyInitiated", manuallyInitiated);
+        set.put("ready", ready);
+        payload.put("Set", set);
+        return payload;
     }
 
     public void requestList() {

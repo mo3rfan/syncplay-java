@@ -7,6 +7,5 @@ Only client side is implemented at the moment.
 ## TODO
 
 * Shared playlists.
-* 'isReady' functionality.
 * Migrate to a better JSON parser.
 * Server side.

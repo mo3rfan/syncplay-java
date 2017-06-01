@@ -98,6 +98,7 @@ public class syncPlayClient implements Runnable {
         pw.flush();
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void run() {
         Socket socket = new Socket();

@@ -5,10 +5,6 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- * Created by irfan on 1/1/17.
- */
-
 public class utils {
     public static String md5(String s) {
         MessageDigest digest;

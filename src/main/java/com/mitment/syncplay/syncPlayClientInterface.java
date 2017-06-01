@@ -4,10 +4,6 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Stack;
 
-/**
- * Created by irfan on 1/1/17.
- */
-
 public interface syncPlayClientInterface {
     class userFileDetails implements Serializable {
         private String filename;

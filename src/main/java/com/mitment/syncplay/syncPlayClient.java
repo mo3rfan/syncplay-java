@@ -285,7 +285,7 @@ public class syncPlayClient implements Runnable {
                                         if (doSeek == null) {
                                             doSeek = false;
                                         }
-                                        long position = 0;
+                                        long position;
                                         try {
                                             position = new Double((double) playstate.get("position")).longValue();
                                         } catch (ClassCastException e) {

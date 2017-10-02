@@ -179,28 +179,28 @@ public class syncPlayClient implements Runnable {
                                         try {
                                             mFileDetails = new
                                                     syncPlayClientInterface.userFileDetails(
-                                                    new Double((double) file.get("duration")).longValue(),
-                                                    new Double((double) file.get("size")).longValue(),
+                                                    Double.valueOf((double) file.get("duration")).longValue(),
+                                                    Double.valueOf((double) file.get("size")).longValue(),
                                                     (String) file.get("name"), userName);
                                         } catch (ClassCastException e) {
                                             try {
                                                 mFileDetails = new
                                                         syncPlayClientInterface.userFileDetails(
-                                                        new Double((long) file.get("duration")).longValue(),
-                                                        new Double((long) file.get("size")).longValue(),
+                                                        Double.valueOf((long) file.get("duration")).longValue(),
+                                                        Double.valueOf((long) file.get("size")).longValue(),
                                                         (String) file.get("name"), userName);
                                             } catch (ClassCastException f) {
                                                 try {
                                                     mFileDetails = new
                                                             syncPlayClientInterface.userFileDetails(
-                                                            new Double((long) file.get("duration")).longValue(),
-                                                            new Double((double) file.get("size")).longValue(),
+                                                            Double.valueOf((long) file.get("duration")).longValue(),
+                                                            Double.valueOf((double) file.get("size")).longValue(),
                                                             (String) file.get("name"), userName);
                                                 } catch (ClassCastException g) {
                                                     mFileDetails = new
                                                             syncPlayClientInterface.userFileDetails(
-                                                            new Double((double) file.get("duration")).longValue(),
-                                                            new Double((long) file.get("size")).longValue(),
+                                                            Double.valueOf((double) file.get("duration")).longValue(),
+                                                            Double.valueOf((long) file.get("size")).longValue(),
                                                             (String) file.get("name"), userName);
                                                 }
                                             }
@@ -228,7 +228,7 @@ public class syncPlayClient implements Runnable {
                                                 && file.containsKey("name")) {
                                             try {
                                                 details.push(new syncPlayClientInterface.userFileDetails(
-                                                        new Double((double) file.get("duration")).longValue(), (long) file.get("size"),
+                                                        Double.valueOf((double) file.get("duration")).longValue(), (long) file.get("size"),
                                                         (String) file.get("name"), user
                                                 ));
                                             } catch (ClassCastException e) {
@@ -240,14 +240,14 @@ public class syncPlayClient implements Runnable {
                                                 } catch (ClassCastException f) {
                                                     try {
                                                         details.push(new syncPlayClientInterface.userFileDetails(
-                                                                new Double((double) file.get("duration")).longValue(),
-                                                                new Double((double) file.get("size")).longValue(),
+                                                                Double.valueOf((double) file.get("duration")).longValue(),
+                                                                Double.valueOf((double) file.get("size")).longValue(),
                                                                 (String) file.get("name"), user
                                                         ));
                                                     } catch (ClassCastException g) {
                                                         details.push(new syncPlayClientInterface.userFileDetails(
                                                                 (long) file.get("duration"),
-                                                                new Double((double) file.get("size")).longValue(),
+                                                                Double.valueOf((double) file.get("size")).longValue(),
                                                                 (String) file.get("name"), user
                                                         ));
                                                     }
@@ -288,12 +288,12 @@ public class syncPlayClient implements Runnable {
                                         }
                                         long position;
                                         try {
-                                            position = new Double((double) playstate.get("position")).longValue();
+                                            position = Double.valueOf((double) playstate.get("position")).longValue();
                                         } catch (ClassCastException e) {
                                             try {
                                                 position = (long) playstate.get("position");
                                             } catch (ClassCastException f) {
-                                                position = new Double((double) playstate.get("position")).longValue();
+                                                position = Double.valueOf((double) playstate.get("position")).longValue();
                                             }
                                         }
                                         sPlayInterface.onUser(setBy, paused, position, doSeek);

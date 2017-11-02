@@ -60,7 +60,7 @@ public class syncPlayClient implements Runnable {
         this.address = address.split(":")[0];
         try {
             this.port = Integer.parseInt(address.split(":")[1]);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
             this.port = 80;
         }
         if (password != null && !password.isEmpty()) {
